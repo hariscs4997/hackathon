@@ -1,7 +1,7 @@
 import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import HackImg from "assets/img/hackathon/hackathon.jpg";
+import NewsImg from "assets/img/hackathon/news.png";
 // @material-ui icons
 // core components
 import Card from "components/Card/Card.js";
@@ -29,7 +29,7 @@ export default function NewsLetter({ data }) {
       <Card>
         <img
           className={classes.imgCardTop}
-          src={HackImg}
+          src={NewsImg}
           alt="Card-img-cap"
         />
         <CardBody>
