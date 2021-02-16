@@ -23,6 +23,7 @@ import landingPageStyle from "assets/jss/material-kit-pro-react/views/landingPag
 import SectionWork from "./Sections/SectionWork.js";
 import HackathonSeaction from "./Sections/hackathonSeaction.jsx";
 import NewsSeaction from "./Sections/newSection.jsx";
+import SearchEngion from "./Sections/searchEngion.jsx";
 
 const useStyles = makeStyles(landingPageStyle);
 
@@ -122,6 +123,7 @@ export default function LandingPage({ ...rest }) {
         <div className={classes.container}>
           {/* <SectionProduct />
           <SectionTeam /> */}
+          <SearchEngion />
           <HackathonSeaction />
           <NewsSeaction />
           <SectionWork />
