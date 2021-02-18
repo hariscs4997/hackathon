@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -11,43 +11,68 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 
 import workStyle from "assets/jss/material-kit-pro-react/views/landingPageSections/workStyle.js";
+import { TextField } from "@material-ui/core";
 
 const useStyles = makeStyles(workStyle);
 
 export default function SectionWork() {
   const classes = useStyles();
+
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [message, setMessage] = useState('')
+
+  const sendMessage=()=>{
+    let payload = {
+      name,
+      email,
+      message
+    }
+    console.log(payload)
+  }
+
   return (
     <div className={classes.section}>
       <GridContainer justify="center">
         <GridItem cs={12} sm={8} md={8}>
-          <h2 className={classes.title}>Work with us</h2>
+          <h2 className={classes.title}>Contact us</h2>
           <h4 className={classes.description}>
-            Divide details about your product or agency work into parts. Write a
-            few lines about each one and contact us about any further
-            collaboration. We will responde get back to you in a couple of
-            hours.
+            Fill this form to reach us
           </h4>
           <form>
             <GridContainer>
               <GridItem xs={12} sm={6} md={6}>
-                <CustomInput
+                {/* <CustomInput
                   labelText="Your Name"
                   id="name"
                   formControlProps={{
                     fullWidth: true
                   }}
-                />
+                /> */}
+                <TextField fullWidth label="Your Name" value={name} onChange={(e) => setName(e.target.value)} />
               </GridItem>
               <GridItem xs={12} sm={6} md={6}>
-                <CustomInput
+                <TextField fullWidth label="Your Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                {/* <CustomInput
                   labelText="Your Email"
                   id="email"
                   formControlProps={{
                     fullWidth: true
                   }}
-                />
+                /> */}
               </GridItem>
-              <CustomInput
+              <GridItem xs={12} sm={12} md={12}>
+                <TextField
+                  fullWidth
+                  value={message} 
+                  onChange={(e) => setMessage(e.target.value)}
+                  label="Your Message"
+                  multiline
+                  rows={5}
+                />
+
+              </GridItem>
+              {/* <CustomInput
                 labelText="Your Message"
                 id="message"
                 formControlProps={{
@@ -58,14 +83,14 @@ export default function SectionWork() {
                   multiline: true,
                   rows: 5
                 }}
-              />
+              /> */}
               <GridItem
                 xs={12}
                 sm={4}
                 md={4}
                 className={classes.mrAuto + " " + classes.mlAuto}
               >
-                <Button color="primary">Send Message</Button>
+                <Button onClick={()=>sendMessage()} color="primary">Send Message</Button>
               </GridItem>
             </GridContainer>
           </form>

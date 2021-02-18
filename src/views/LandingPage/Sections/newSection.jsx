@@ -28,6 +28,7 @@ export default function NewsSeaction(props) {
 
     return (
         <div className={classes.section}>
+            <h2 className={classes.title} style={{marginTop:0}}>Hackathon News</h2>
             <GridContainer>
                 {newsList &&
                     newsList.map(news => (

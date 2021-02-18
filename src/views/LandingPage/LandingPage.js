@@ -29,52 +29,6 @@ const useStyles = makeStyles(landingPageStyle);
 
 export default function LandingPage({ ...rest }) {
 
-  const technologiesList = [
-    {
-      id: 1,
-      nombre: "Java",
-    },
-    {
-      id: 2,
-      nombre: "Javascript",
-    },
-    {
-      id: 3,
-      nombre: "C",
-    },
-    {
-      id: 4,
-      nombre: "C++",
-    },
-    {
-      id: 5,
-      nombre: "PHP",
-    },
-    {
-      id: 6,
-      nombre: "Rust",
-    },
-    {
-      id: 7,
-      nombre: "Python",
-    },
-    {
-      id: 8,
-      nombre: "Kotlin",
-    },
-    {
-      id: 9,
-      nombre: "Swift",
-    },
-    {
-      id: 10,
-      nombre: "Go",
-    },
-    {
-      id: 11,
-      nombre: "TypeScript",
-    },
-  ]
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
@@ -124,7 +78,7 @@ export default function LandingPage({ ...rest }) {
           {/* <SectionProduct />
           <SectionTeam /> */}
           <SearchEngion />
-          <HackathonSeaction />
+          <HackathonSeaction title='' />
           <NewsSeaction />
           <SectionWork />
         </div>

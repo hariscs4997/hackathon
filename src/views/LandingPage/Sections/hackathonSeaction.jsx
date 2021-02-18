@@ -22,16 +22,20 @@ export default function HackathonSeaction(props) {
     fetch(`http://localhost:8222/hackatones`)
       .then(res => res.json(res))
       .then(data => {
-        if(Object.keys(props).length){
+        if (Object.keys(props).length) {
           setHackathonList(data)
-        }else{
-          setHackathonList(data.slice(0,6))
+        } else {
+          setHackathonList(data.slice(0, 6))
         }
       })
   }, [props])
 
   return (
     <div className={classes.section}>
+      {
+        props.title != '' &&
+        <h2 className='makeStyles-title-145'>{props.title}</h2>
+      }
       <GridContainer>
         {hackathonList &&
           hackathonList.map(hackathon => (
