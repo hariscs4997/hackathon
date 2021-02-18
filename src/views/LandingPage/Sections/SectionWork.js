@@ -99,7 +99,7 @@ export default function SectionWork() {
                 md={4}
                 className={classes.mrAuto + " " + classes.mlAuto}
               >
-                <Button onClick={() => sendMessage()} color="primary">Send Message</Button>
+                <Button style={{marginTop:20}} onClick={() => sendMessage()} color="primary">Send Message</Button>
               </GridItem>
               <GridItem xs={12} sm={12} md={12}>
                 {

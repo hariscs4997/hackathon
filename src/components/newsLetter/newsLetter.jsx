@@ -33,7 +33,7 @@ export default function NewsLetter({ data }) {
           alt="Card-img-cap"
         />
         <CardBody>
-          <Link to={`#${data.id}`}>
+          <Link to={`/news/${data.id}`}>
             <h4 className={classes.cardTitle}>{data.titular}</h4>
           </Link>
           <p style={{ maxWidth: '100%', whiteSpace: "nowrap", overflow: "hidden", textOverflow: 'ellipsis' }}>{data.contenido}</p>

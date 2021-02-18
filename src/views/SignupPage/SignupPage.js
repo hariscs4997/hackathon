@@ -1,20 +1,10 @@
 /*eslint-disable*/
-import React from "react";
+import React, { useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import Timeline from "@material-ui/icons/Timeline";
-import Code from "@material-ui/icons/Code";
-import Group from "@material-ui/icons/Group";
-import Face from "@material-ui/icons/Face";
-import Email from "@material-ui/icons/Email";
-import Check from "@material-ui/icons/Check";
 import Favorite from "@material-ui/icons/Favorite";
 // core components
 import Header from "components/Header/Header.js";
@@ -23,42 +13,58 @@ import Footer from "components/Footer/Footer.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Button from "components/CustomButtons/Button.js";
-import Card from "components/Card/Card";
 import CardBody from "components/Typography/Info.js";
-import InfoArea from "components/InfoArea/InfoArea.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
+import CardHeader from "components/Card/CardHeader.js";
 
-import signupPageStyle from "assets/jss/material-kit-pro-react/views/signupPageStyle.js";
+import loginPageStyle from "assets/jss/material-kit-pro-react/views/loginPageStyle.js";
 
 import image from "assets/img/bg7.jpg";
+import Card from "components/Card/Card";
+import { TextField } from "@material-ui/core";
+import axios from "axios";
 
-const useStyles = makeStyles(signupPageStyle);
+const useStyles = makeStyles(loginPageStyle);
 
-export default function SignUpPage({ ...rest }) {
-  const [checked, setChecked] = React.useState([1]);
-  const handleToggle = value => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-    setChecked(newChecked);
+export default function SignUpPage() {
+
+  const classes = useStyles();
+  const [user, setUser] = useState({
+    nombre: "",
+    apellido1: "",
+    apellido2: "",
+    dni: "",
+    nick: "",
+    password: "",
+    email: ""
+  });
+
+  const handleChange = (prop) => (event) => {
+    setUser({ ...user, [prop]: event.target.value });
   };
+
+
   React.useEffect(() => {
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
   });
-  const classes = useStyles();
+
+  const registerHandler = () => {
+    axios.post('http://localhost:8222/users/register', user)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+  }
+
   return (
     <div>
       <Header
         absolute
         color="transparent"
-        brand="Material Kit PRO React"
-        links={<HeaderLinks dropdownHoverColor="rose" />}
-        {...rest}
+        brand="World of Hackathon"
+        links={<HeaderLinks dropdownHoverColor="info" />}
       />
       <div
         className={classes.pageHeader}
@@ -70,153 +76,117 @@ export default function SignUpPage({ ...rest }) {
       >
         <div className={classes.container}>
           <GridContainer justify="center">
-            <GridItem xs={12} sm={10} md={10}>
-              <Card className={classes.cardSignup}>
-                <h2 className={classes.cardTitle}>Register</h2>
-                <CardBody>
-                  <GridContainer justify="center">
-                    <GridItem xs={12} sm={5} md={5}>
-                      <InfoArea
-                        className={classes.infoArea}
-                        title="Marketing"
-                        description="We've created the marketing campaign of the website. It was a very interesting collaboration."
-                        icon={Timeline}
-                        iconColor="rose"
-                      />
-                      <InfoArea
-                        className={classes.infoArea}
-                        title="Fully Coded in HTML5"
-                        description="We've developed the website with HTML5 and CSS3. The client has access to the code using GitHub."
-                        icon={Code}
-                        iconColor="primary"
-                      />
-                      <InfoArea
-                        className={classes.infoArea}
-                        title="Built Audience"
-                        description="There is also a Fully Customizable CMS Admin Dashboard for this product."
-                        icon={Group}
-                        iconColor="info"
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={5} md={5}>
-                      <div className={classes.textCenter}>
-                        <Button justIcon round color="twitter">
-                          <i className={classes.socials + " fab fa-twitter"} />
-                        </Button>
-                        {` `}
-                        <Button justIcon round color="dribbble">
-                          <i className={classes.socials + " fab fa-dribbble"} />
-                        </Button>
-                        {` `}
-                        <Button justIcon round color="facebook">
-                          <i
-                            className={classes.socials + " fab fa-facebook-f"}
-                          />
-                        </Button>
-                        {` `}
-                        <h4 className={classes.socialTitle}>or be classical</h4>
-                      </div>
-                      <form className={classes.form}>
-                        <CustomInput
-                          formControlProps={{
-                            fullWidth: true,
-                            className: classes.customFormControlClasses
-                          }}
-                          inputProps={{
-                            startAdornment: (
-                              <InputAdornment
-                                position="start"
-                                className={classes.inputAdornment}
-                              >
-                                <Face className={classes.inputAdornmentIcon} />
-                              </InputAdornment>
-                            ),
-                            placeholder: "First Name..."
-                          }}
+            <GridItem xs={12} sm={12} md={6}>
+              <Card>
+                <form className={classes.form}>
+                  <CardHeader
+                    color="primary"
+                    signup
+                    className={classes.cardHeader}
+                  >
+                    <h4 className={classes.cardTitle}>Register</h4>
+                    <div className={classes.socialLine}>
+                    </div>
+                  </CardHeader>
+                  <CardBody>
+                    <GridContainer style={{ margin: 'auto' }}>
+                      <GridItem style={{ marginBottom: 20 }} xs={12} sm={12} md={12}>
+                        <TextField
+                          fullWidth
+                          value={user.nombre}
+                          onChange={handleChange('nombre')}
+                          id="outlined-required"
+                          label="Nombre"
+                          id="outlined-secondary"
+                          variant="outlined"
                         />
-                        <CustomInput
-                          formControlProps={{
-                            fullWidth: true,
-                            className: classes.customFormControlClasses
-                          }}
-                          inputProps={{
-                            startAdornment: (
-                              <InputAdornment
-                                position="start"
-                                className={classes.inputAdornment}
-                              >
-                                <Email className={classes.inputAdornmentIcon} />
-                              </InputAdornment>
-                            ),
-                            placeholder: "Email..."
-                          }}
+                      </GridItem>
+                      <GridItem style={{ marginBottom: 20 }} xs={12} sm={12} md={12}>
+                        <TextField
+                          fullWidth
+                          value={user.apellido1}
+                          onChange={handleChange('apellido1')}
+                          id="outlined-required"
+                          label="Apellido1"
+                          id="outlined-secondary"
+                          variant="outlined"
                         />
-                        <CustomInput
-                          formControlProps={{
-                            fullWidth: true,
-                            className: classes.customFormControlClasses
-                          }}
-                          inputProps={{
-                            startAdornment: (
-                              <InputAdornment
-                                position="start"
-                                className={classes.inputAdornment}
-                              >
-                                <Icon className={classes.inputAdornmentIcon}>
-                                  lock_outline
-                                </Icon>
-                              </InputAdornment>
-                            ),
-                            placeholder: "Password..."
-                          }}
+                      </GridItem>
+                      <GridItem style={{ marginBottom: 20 }} xs={12} sm={12} md={12}>
+                        <TextField
+                          fullWidth
+                          value={user.apellido2}
+                          onChange={handleChange('apellido2')}
+                          id="outlined-required"
+                          label="Apellido2"
+                          id="outlined-secondary"
+                          variant="outlined"
                         />
-                        <FormControlLabel
-                          classes={{
-                            label: classes.label
-                          }}
-                          control={
-                            <Checkbox
-                              tabIndex={-1}
-                              onClick={() => handleToggle(1)}
-                              checkedIcon={
-                                <Check className={classes.checkedIcon} />
-                              }
-                              icon={<Check className={classes.uncheckedIcon} />}
-                              classes={{
-                                checked: classes.checked,
-                                root: classes.checkRoot
-                              }}
-                              checked={checked.indexOf(1) !== -1 ? true : false}
-                            />
-                          }
-                          label={
-                            <span>
-                              I agree to the{" "}
-                              <a href="#pablo">terms and conditions</a>.
-                            </span>
-                          }
+                      </GridItem>
+                      <GridItem style={{ marginBottom: 20 }} xs={12} sm={12} md={12}>
+                        <TextField
+                          fullWidth
+                          value={user.nick}
+                          onChange={handleChange('nick')}
+                          id="outlined-required"
+                          label="Nick"
+                          id="outlined-secondary"
+                          variant="outlined"
                         />
-                        <div className={classes.textCenter}>
-                          <Button round color="primary">
-                            Get started
-                          </Button>
-                        </div>
-                      </form>
-                    </GridItem>
-                  </GridContainer>
-                </CardBody>
+                      </GridItem>
+                      <GridItem style={{ marginBottom: 20 }} xs={12} sm={12} md={12}>
+                        <TextField
+                          fullWidth
+                          value={user.dni}
+                          onChange={handleChange('dni')}
+                          id="outlined-required"
+                          label="DNI"
+                          id="outlined-secondary"
+                          variant="outlined"
+                        />
+                      </GridItem>
+                      <GridItem style={{ marginBottom: 20 }} xs={12} sm={12} md={12}>
+                        <TextField
+                          fullWidth
+                          value={user.email}
+                          onChange={handleChange('email')}
+                          id="outlined-required"
+                          label="Email"
+                          id="outlined-secondary"
+                          variant="outlined"
+                        />
+                      </GridItem>
+                      <GridItem style={{ marginBottom: 20 }} xs={12} sm={12} md={12}>
+                        <TextField
+                          fullWidth
+                          value={user.password}
+                          onChange={handleChange('password')}
+                          id="outlined-required"
+                          type='password'
+                          label="Password"
+                          id="outlined-secondary"
+                          variant="outlined"
+                        />
+                      </GridItem>
+                    </GridContainer>
+                  </CardBody>
+                  <div className={classes.textCenter}>
+                    <Button onClick={() => registerHandler()} simple color="primary" size="lg">Register</Button>
+                  </div>
+                </form>
               </Card>
             </GridItem>
           </GridContainer>
         </div>
         <Footer
+          className={classes.footer}
           content={
             <div>
               <div className={classes.left}>
                 <List className={classes.list}>
                   <ListItem className={classes.inlineBlock}>
                     <a
-                      href="https://www.creative-tim.com/?ref=mkpr-signup"
+                      href="https://www.creative-tim.com/?ref=mkpr-login"
                       target="_blank"
                       className={classes.block}
                     >
@@ -225,7 +195,7 @@ export default function SignUpPage({ ...rest }) {
                   </ListItem>
                   <ListItem className={classes.inlineBlock}>
                     <a
-                      href="https://www.creative-tim.com/presentation?ref=mkpr-signup"
+                      href="https://www.creative-tim.com/presentation?ref=mkpr-login"
                       target="_blank"
                       className={classes.block}
                     >
@@ -242,7 +212,7 @@ export default function SignUpPage({ ...rest }) {
                   </ListItem>
                   <ListItem className={classes.inlineBlock}>
                     <a
-                      href="https://www.creative-tim.com/license?ref=mkpr-signup"
+                      href="https://www.creative-tim.com/license?ref=mkpr-login"
                       target="_blank"
                       className={classes.block}
                     >
@@ -255,12 +225,12 @@ export default function SignUpPage({ ...rest }) {
                 &copy; {1900 + new Date().getYear()} , made with{" "}
                 <Favorite className={classes.icon} /> by{" "}
                 <a
-                  href="https://www.creative-tim.com?ref=mkpr-signup"
+                  href="https://www.creative-tim.com?ref=mkpr-login"
                   target="_blank"
                 >
                   Creative Tim
                 </a>{" "}
-                for a better web.
+                for a better web
               </div>
             </div>
           }
