@@ -21,6 +21,7 @@ import workStyle from "assets/jss/material-kit-pro-react/views/landingPageSectio
 import styles from "assets/jss/material-kit-pro-react/customCheckboxRadioSwitchStyle.js";
 import { TextField } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const useStyles = makeStyles(styles);
 const workStyles = makeStyles(workStyle);
@@ -36,10 +37,9 @@ export default function SearchEngion(props) {
 	const history = useHistory();
 
 	useEffect(() => {
-		fetch(`http://localhost:8222/tecnologias`)
-			.then(res => res.json(res))
+		axios.get('http://localhost:8222/tecnologias')
 			.then(data => {
-				setTecnologias(data)
+				setTecnologias(data.data)
 			})
 	}, [props])
 
@@ -51,7 +51,7 @@ export default function SearchEngion(props) {
 	const handleToggle = value => {
 		setChecked(value ? 0 : 1)
 	}
-	
+
 	const searchHackathon = () => {
 		history.push(`/hackathon/search?nombre=${nombre}&presencial=${checked}&tecnologias=${simpleSelect}`)
 	}
@@ -61,7 +61,7 @@ export default function SearchEngion(props) {
 		<div className={classes.section}>
 			<GridContainer justify="center">
 				<GridItem cs={12} sm={8} md={8}>
-				<h2 className={classesWork.title}>Search Hackathon</h2>
+					<h2 className={classesWork.title}>Search Hackathon</h2>
 					<form>
 						<GridContainer>
 							<GridItem xs={12} sm={4} md={4}>
@@ -134,7 +134,7 @@ export default function SearchEngion(props) {
 								md={2}
 								className={classes.mrAuto + " " + classes.mlAuto}
 							>
-								<Button onClick={()=>searchHackathon()} color="primary">Search Hackathon</Button>
+								<Button onClick={() => searchHackathon()} color="primary">Search Hackathon</Button>
 							</GridItem>
 						</GridContainer>
 					</form>

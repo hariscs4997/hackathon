@@ -10,6 +10,7 @@ import GridItem from "components/Grid/GridItem.js";
 import productStyle from "assets/jss/material-kit-pro-react/views/landingPageSections/productStyle.js";
 import Hackathon from "components/hackathon/hackathon";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 const useStyles = makeStyles(productStyle);
 
@@ -28,25 +29,24 @@ export default function HackathonSeaction(props) {
     getHackathons()
   }, [props]);
 
-  const getHackathons=() => {
-    fetch(`http://localhost:8222/hackatones`)
-      .then(res => res.json(res))
-      .then(async data => {
-        if (props.filter) {
-          const nombre1 = query.get("nombre").toString().toLowerCase()
-          const presencial1 = query.get("presencial")
-          const tecnologias1 = query.get("tecnologias")
+  const getHackathons = () => {
+    axios.get('http://localhost:8222/hackatones').then(async res => {
+      let data = res.data
+      if (props.filter) {
+        const nombre1 = query.get("nombre").toString().toLowerCase()
+        const presencial1 = query.get("presencial")
+        const tecnologias1 = query.get("tecnologias")
 
-          let list = await data.filter(h =>
-            h.nombre.toLowerCase().includes(nombre1) &&
-            h.presencial == presencial1 &&
-            h.id_tech == tecnologias1
-          )
-          setHackathonList(list)
-        } else {
-          setHackathonList(data.slice(0, 6))
-        }
-      })
+        let list = await data.filter(h =>
+          h.nombre.toLowerCase().includes(nombre1) &&
+          h.presencial == presencial1 &&
+          h.id_tech == tecnologias1
+        )
+        setHackathonList(list)
+      } else {
+        setHackathonList(data.slice(0, 6))
+      }
+    })
   }
 
   return (

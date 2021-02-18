@@ -8,9 +8,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Button from "components/CustomButtons/Button.js";
+import Check from "@material-ui/icons/Check";
+
 
 import workStyle from "assets/jss/material-kit-pro-react/views/landingPageSections/workStyle.js";
-import { TextField } from "@material-ui/core";
+import { SnackbarContent, TextField } from "@material-ui/core";
 import axios from "axios";
 
 const useStyles = makeStyles(workStyle);
@@ -18,23 +20,24 @@ const useStyles = makeStyles(workStyle);
 export default function SectionWork() {
   const classes = useStyles();
 
+  const [messageType, setMessageType] = useState('success')
+  const [responseMessage, setResponseMessage] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
 
-  const sendMessage=()=>{
+  const sendMessage = () => {
     let payload = {
       name,
       email,
       message
     }
-    console.log(payload)
-    axios.post('http://localhost:8222/email',payload).then(res=>{
-      console.log(res)
+    axios.post('http://localhost:8222/email', payload).then(res => {
+      setResponseMessage(res.data.message)
     })
-    .catch(err=>{
-      console.warn(err)
-    })
+      .catch(err => {
+        setResponseMessage('Something went wrong! Please try later.')
+      })
   }
 
   return (
@@ -58,7 +61,7 @@ export default function SectionWork() {
                 <TextField fullWidth label="Your Name" value={name} onChange={(e) => setName(e.target.value)} />
               </GridItem>
               <GridItem xs={12} sm={6} md={6}>
-                <TextField fullWidth label="Your Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <TextField fullWidth type='email' label="Your Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 {/* <CustomInput
                   labelText="Your Email"
                   id="email"
@@ -70,7 +73,7 @@ export default function SectionWork() {
               <GridItem xs={12} sm={12} md={12}>
                 <TextField
                   fullWidth
-                  value={message} 
+                  value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   label="Your Message"
                   multiline
@@ -96,7 +99,20 @@ export default function SectionWork() {
                 md={4}
                 className={classes.mrAuto + " " + classes.mlAuto}
               >
-                <Button onClick={()=>sendMessage()} color="primary">Send Message</Button>
+                <Button onClick={() => sendMessage()} color="primary">Send Message</Button>
+              </GridItem>
+              <GridItem xs={12} sm={12} md={12}>
+                {
+                  responseMessage &&
+                  <SnackbarContent
+                    message={
+                      <span>{responseMessage}</span>
+                    }
+                    close='true'
+                    color='info'
+                    icon={Check}
+                  />
+                }
               </GridItem>
             </GridContainer>
           </form>
