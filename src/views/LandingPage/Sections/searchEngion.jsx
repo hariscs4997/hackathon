@@ -53,7 +53,7 @@ export default function SearchEngion(props) {
 	}
 	
 	const searchHackathon = () => {
-		history.push(`/hackathon/search?nombre=${nombre}&checked=${checked}&simpleSelect=${simpleSelect}`)
+		history.push(`/hackathon/search?nombre=${nombre}&presencial=${checked}&tecnologias=${simpleSelect}`)
 	}
 
 

@@ -7,11 +7,11 @@ import { makeStyles } from "@material-ui/core/styles";
 // core components
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 
 import workStyle from "assets/jss/material-kit-pro-react/views/landingPageSections/workStyle.js";
 import { TextField } from "@material-ui/core";
+import axios from "axios";
 
 const useStyles = makeStyles(workStyle);
 
@@ -29,6 +29,12 @@ export default function SectionWork() {
       message
     }
     console.log(payload)
+    axios.post('http://localhost:8222/email',payload).then(res=>{
+      console.log(res)
+    })
+    .catch(err=>{
+      console.warn(err)
+    })
   }
 
   return (

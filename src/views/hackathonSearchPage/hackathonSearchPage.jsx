@@ -21,18 +21,18 @@ import HackathonSeaction from "views/LandingPage/Sections/hackathonSeaction";
 const useStyles = makeStyles(landingPageStyle);
 
 export default function HackathonSearchPage({ ...rest }) {
-
-
+    
     React.useEffect(() => {
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
-    });
+    }, [rest]);
+
     const classes = useStyles();
     return (
         <div>
             <Header
                 color="transparent"
-                brand="Material Kit PRO React"
+                brand="World of Hackathon"
                 links={<HeaderLinks dropdownHoverColor="info" />}
                 fixed
                 changeColorOnScroll={{
@@ -47,7 +47,7 @@ export default function HackathonSearchPage({ ...rest }) {
             </Parallax>
             <div className={classNames(classes.main, classes.mainRaised)}>
                 <div className={classes.container}>
-                    <HackathonSeaction data='all' title='Hackathon Results' />
+                    <HackathonSeaction filter='true' title='Hackathon Results' />
                 </div>
             </div>
             <Footer
