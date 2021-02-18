@@ -33,14 +33,14 @@ export default function HackathonSeaction(props) {
     axios.get('http://localhost:8222/hackatones').then(async res => {
       let data = res.data
       if (props.filter) {
-        const nombre1 = query.get("nombre").toString().toLowerCase()
-        const presencial1 = query.get("presencial")
-        const tecnologias1 = query.get("tecnologias")
+        const nombre = query.get("nombre").toString().toLowerCase()
+        const presencial = query.get("presencial")
+        const tecnologias = query.get("tecnologias")
 
         let list = await data.filter(h =>
-          h.nombre.toLowerCase().includes(nombre1) &&
-          h.presencial == presencial1 &&
-          h.id_tech == tecnologias1
+          h.nombre.toLowerCase().includes(nombre) &&
+          h.presencial == presencial &&
+          h.id_tech == tecnologias
         )
         setHackathonList(list)
       } else {

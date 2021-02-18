@@ -33,7 +33,7 @@ export default function Hackathon({data}) {
           alt="Card-img-cap"
         />
         <CardBody>
-            <Link to={`#${data.id}`}>
+            <Link to={`/hackathon/${data.id}`}>
               <h4 className={classes.cardTitle}>{data.nombre}</h4>
             </Link>
           <p style={{maxWidth:'100%',whiteSpace:"nowrap",overflow:"hidden",textOverflow:'ellipsis'}}>{data.contenido}</p>

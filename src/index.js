@@ -39,6 +39,7 @@ import ProfilePage from "views/ProfilePage/ProfilePage.js";
 import SignupPage from "views/SignupPage/SignupPage.js";
 import ErrorPage from "views/ErrorPage/ErrorPage.js";
 import HackathonSearchPage from "views/hackathonSearchPage/hackathonSearchPage";
+import HackathonDetail from "views/hackathonDetail/hackathonDetail";
 
 var hist = createBrowserHistory();
 
@@ -47,6 +48,7 @@ ReactDOM.render(
     <Switch>
       <Route exact path="/" component={LandingPage} />
       <Route exact path="/hackathon/search" component={HackathonSearchPage} />
+      <Route path="/hackathon/:id" component={HackathonDetail} />
       {/* <Route path="/about-us" component={AboutUsPage} /> */}
       {/* <Route path="/blog-post" component={BlogPostPage} /> */}
       {/* <Route path="/blog-posts" component={BlogPostsPage} /> */}
