@@ -62,11 +62,14 @@ export default function HackathonDetail({ ...rest }) {
 			})
 	}
 	const joinHackathon = () => {
-		axios.get(`${process.env.REACT_APP_API_URL}/hackatones/${hackathon.id}/${userId}/register`)
+		const headers = {
+			'Authorization': localStorage.HACKATHON_USER_TOKEN
+		  }
+		axios.post(`${process.env.REACT_APP_API_URL}/hackatones/${hackathon.id}/${userId}/register`,{},{headers:headers})
 			.then(res => {
-				// setResponseMessage(res.data)
-				console.log(res.data)
+				setResponseMessage(`codigo Reserva ${res.data.codigoReserva}`)
 			})
+			.catch(error=>setResponseMessage(error.response.data.err))
 	}
 
 
@@ -129,6 +132,7 @@ export default function HackathonDetail({ ...rest }) {
 								</Info>
 								<p>{hackathon.contenido}</p>
 								<Button onClick={()=>joinHackathon()} color="secondary" round='true'><Icon>add</Icon> Register</Button>
+								<br />
 								{
 									responseMessage &&
 									<Info>{responseMessage}</Info>
