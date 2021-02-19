@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // @material-ui/core components
@@ -27,13 +27,13 @@ import cardProfile2Square from "assets/img/faces/card-profile2-square.jpg";
 
 import profilePageStyle from "assets/jss/material-kit-pro-react/views/profilePageStyle.js";
 import axios from "axios";
-import { Card, TextField } from "@material-ui/core";
+import { Card, SnackbarContent, TextField } from "@material-ui/core";
 import CardHeader from "components/Card/CardHeader";
 import CardBody from "components/Card/CardBody";
 
 const useStyles = makeStyles(profilePageStyle);
 
-export default function ProfilePage({ ...rest }) {
+export default function ProfilePage(props) {
 
   const classes = useStyles();
   const imageClasses = classNames(
@@ -41,7 +41,11 @@ export default function ProfilePage({ ...rest }) {
     classes.imgRoundedCircle,
     classes.imgFluid
   );
+  const [message, setMessage] = useState('')
+  const [userId, setUserId] = useState(23)
   const [user, setUser] = useState({
+    id: 0,
+    avatar: christian,
     nombre: "",
     apellido1: "",
     apellido2: "",
@@ -56,48 +60,69 @@ export default function ProfilePage({ ...rest }) {
   };
 
 
-  React.useEffect(() => {
-    getUserById()
+  useEffect(() => {
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
-  });
+  }, [props]);
+
+  useEffect(() => {
+    getUserById()
+  }, [props]);
 
   const getUserById = () => {
     const headers = {
-      'Content-Type': 'application/json',
       'Authorization': localStorage.HACKATHON_USER_TOKEN
     }
-    axios.get('http://localhost:8222/users-info/23', { headers: Header })
+    axios.get('http://localhost:8222/users-info/'+userId, { headers: headers })
       .then(res => {
-        console.log(res);
-        setUser(res.data)
+        setUser({
+          ...res.data,
+          password: '',
+          avatar: res.data.avatar ? res.data.avatar : christian
+        })
       })
       .catch(err => {
         console.log(err)
       })
   }
 
-  const registerHandler = () => {
-    axios.post('http://localhost:8222/users/23/update', user)
+  const updateUserHandler = () => {
+    setMessage('')
+    const headers = {
+      'Authorization': localStorage.HACKATHON_USER_TOKEN
+    }
+    let userData = { ...user, userId: user.id }
+    axios.post(`http://localhost:8222/users/${userId}/update`, userData, { headers: headers })
       .then(res => {
         console.log(res);
       })
       .catch(err => {
-        console.log(err)
+        setMessage(err.response.data.err)
       })
   }
 
   const updateImage = (avatar) => {
     let formData = new FormData()
     formData.append('avatar', avatar)
-    axios.post('http://localhost:8222/users/23/avatar/update', formData)
+    axios.put(`http://localhost:8222/users/${userId}/avatar/update`, formData)
       .then(res => {
-        console.log(res);
+        // setUser({...user,avatar:'http://localhost:8222/'+res.data.file})
+        console.log({avatar:res.data.file});
       })
       .catch(err => {
         console.log(err)
       })
   }
+
+  // const getUserAvatar = () => {
+  //   axios.post('http://localhost:8222/users/23/avatar')
+  //     .then(res => {
+  //       console.log(res);
+  //     })
+  //     .catch(err => {
+  //       console.log(err)
+  //     })
+  // }
 
   const uploadPhoto = () => {
     document.getElementById('imagePicker').click()
@@ -114,7 +139,7 @@ export default function ProfilePage({ ...rest }) {
           height: 200,
           color: "info"
         }}
-        {...rest}
+        props
       />
       <Parallax
         image={require("assets/img/examples/city.jpg")}
@@ -127,11 +152,14 @@ export default function ProfilePage({ ...rest }) {
             <GridItem xs={12} sm={12} md={12}>
               <div className={classes.profile}>
                 <div>
-                  <img src={christian} alt="..." className={imageClasses} />
+                  <img src={user.avatar} alt="..." className={imageClasses} />
                   <Camera style={{ cursor: 'pointer', margin: '0 0 -3px -55px', fontSize: 50, zIndex: 5, position: 'relative', color: '#00acc1' }} onClick={() => uploadPhoto()} />
                 </div>
                 <div className={classes.name}>
-                  <h3 className={classes.title}>Christian Louboutin</h3>
+                  {
+                    user.nombre &&
+                    <h3 className={classes.title}>{user.nombre}</h3>
+                  }
                 </div>
               </div>
             </GridItem>
@@ -221,7 +249,18 @@ export default function ProfilePage({ ...rest }) {
                     </GridContainer>
                   </CardBody>
                   <div className={classes.textCenter}>
-                    <Button onClick={() => registerHandler()} simple color="primary" size="lg">Update</Button>
+                    {
+                      message &&
+                      <SnackbarContent
+                        message={
+                          <span>{message}</span>
+                        }
+                        close='true'
+                        color="danger"
+                        icon="info_outline"
+                      />
+                    }
+                    <Button onClick={() => updateUserHandler()} simple color="primary" size="lg">Update</Button>
                   </div>
                 </form>
               </Card>
