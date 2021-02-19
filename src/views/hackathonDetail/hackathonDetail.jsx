@@ -29,14 +29,20 @@ const useStyles = makeStyles(landingPageStyle);
 
 export default function HackathonDetail({ ...rest }) {
 	const { id } = useParams()
+	const [responseMessage, setResponseMessage] = useState()
+	const [userId, setUserId] = useState()
 	const [hackathon, setHackathon] = useState()
 	const [tecnologias, setTecnologias] = useState([])
 
 
 	React.useEffect(() => {
+		if(localStorage.HACKATHON_USER){
+			let user = JSON.parse(localStorage.HACKATHON_USER)
+			setUserId(user.id)
+		}
 		getTechnologyList()
 		if (id) {
-			axios.get('http://localhost:8222/hackatones/' + id)
+			axios.get(process.env.REACT_APP_API_URL+'/hackatones/' + id)
 				.then(res => {
 					setHackathon(res.data)
 				})
@@ -50,9 +56,16 @@ export default function HackathonDetail({ ...rest }) {
 
 
 	const getTechnologyList = () => {
-		axios.get('http://localhost:8222/tecnologias')
+		axios.get(process.env.REACT_APP_API_URL+'/tecnologias')
 			.then(data => {
 				setTecnologias(data.data)
+			})
+	}
+	const joinHackathon = () => {
+		axios.get(`${process.env.REACT_APP_API_URL}/hackatones/${hackathon.id}/${userId}/register`)
+			.then(res => {
+				// setResponseMessage(res.data)
+				console.log(res.data)
 			})
 	}
 
@@ -115,7 +128,11 @@ export default function HackathonDetail({ ...rest }) {
 									<h6 className={classes.cardCategory}>{getTechnology(hackathon.id_tech)}</h6>
 								</Info>
 								<p>{hackathon.contenido}</p>
-								<Button color="info" round><Icon>add</Icon> Register</Button>
+								<Button onClick={()=>joinHackathon()} color="secondary" round='true'><Icon>add</Icon> Register</Button>
+								{
+									responseMessage &&
+									<Info>{responseMessage}</Info>
+								}
 							</CardBody>
 						}
 					</Card>

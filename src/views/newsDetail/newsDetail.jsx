@@ -33,7 +33,7 @@ export default function NewsDetail({ ...rest }) {
 
 	React.useEffect(() => {
 		if (id) {
-			axios.get('http://localhost:8222/noticias/' + id)
+			axios.get(process.env.REACT_APP_API_URL+'/noticias/' + id)
 				.then(res => {
 					setNews(res.data)
 				})

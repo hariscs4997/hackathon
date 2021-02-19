@@ -1,9 +1,9 @@
 /* eslint-disable */
-import React from "react";
+import React, { useEffect, useState } from "react";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
 // react components for routing our app without refresh
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -47,11 +47,28 @@ import styles from "assets/jss/material-kit-pro-react/components/headerLinksStyl
 const useStyles = makeStyles(styles);
 
 export default function HeaderLinks(props) {
+  const history=useHistory()
+  const [appUser, setAppUser] = useState(false)
+
+  useEffect(() => {
+    if (localStorage.HACKATHON_USER_TOKEN) {
+      setAppUser(true)
+    } else {
+      setAppUser(false)
+    }
+  }, [props])
+
   const easeInOutQuad = (t, b, c, d) => {
     t /= d / 2;
     if (t < 1) return (c / 2) * t * t + b;
     t--;
     return (-c / 2) * (t * (t - 2) - 1) + b;
+  };
+
+  const logoutHandler = () => {
+    localStorage.removeItem('HACKATHON_USER_TOKEN')
+    localStorage.removeItem('HACKATHON_USER')
+    history.push('/login-page')
   };
 
   const smoothScroll = (e, target) => {
@@ -144,16 +161,38 @@ export default function HeaderLinks(props) {
           ]}
         />
       </ListItem> */}
-      <ListItem className={classes.listItem}>
-        <Link to="/signup-page" className={classes.dropdownLink}>
-          <PersonAdd className={classes.dropdownIcons} /> Signup Page
+      {
+        appUser &&
+        <ListItem className={classes.listItem}>
+          <Link to="/profile-page" className={classes.dropdownLink}>
+            <Icon>person</Icon> Profile
         </Link>
-      </ListItem>
-      <ListItem className={classes.listItem}>
-        <Link to="/login-page" className={classes.dropdownLink}>
-          <Fingerprint className={classes.dropdownIcons} /> Login Page
+        </ListItem>
+      }
+      {
+        appUser &&
+        <ListItem className={classes.listItem}>
+          <span onClick={()=>logoutHandler()} className={classes.dropdownLink}>
+            <Icon>logout</Icon> Logout
+        </span>
+        </ListItem>
+      }
+      {
+        !appUser &&
+        <ListItem className={classes.listItem}>
+          <Link to="/signup-page" className={classes.dropdownLink}>
+            <PersonAdd className={classes.dropdownIcons} /> Signup Page
         </Link>
-      </ListItem>
+        </ListItem>
+      }
+      {
+        !appUser &&
+        <ListItem className={classes.listItem}>
+          <Link to="/login-page" className={classes.dropdownLink}>
+            <Fingerprint className={classes.dropdownIcons} /> Login Page
+        </Link>
+        </ListItem>
+      }
     </List>
   );
 }

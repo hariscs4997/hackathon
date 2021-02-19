@@ -42,7 +42,7 @@ export default function ProfilePage(props) {
     classes.imgFluid
   );
   const [message, setMessage] = useState('')
-  const [userId, setUserId] = useState(23)
+  const [userId, setUserId] = useState(0)
   const [user, setUser] = useState({
     id: 0,
     avatar: christian,
@@ -69,11 +69,13 @@ export default function ProfilePage(props) {
     getUserById()
   }, [props]);
 
-  const getUserById = () => {
+  const getUserById = async () => {
+    let user = await JSON.parse(localStorage.HACKATHON_USER)
+    setUserId(user.id)
     const headers = {
       'Authorization': localStorage.HACKATHON_USER_TOKEN
     }
-    axios.get('http://localhost:8222/users-info/'+userId, { headers: headers })
+    axios.get(process.env.REACT_APP_API_URL+'/users-info/' + user.id, { headers: headers })
       .then(res => {
         setUser({
           ...res.data,
@@ -82,32 +84,63 @@ export default function ProfilePage(props) {
         })
       })
       .catch(err => {
-        console.log(err)
+        setMessage(err.response.data.error)
       })
   }
 
   const updateUserHandler = () => {
     setMessage('')
-    const headers = {
-      'Authorization': localStorage.HACKATHON_USER_TOKEN
+    let field = Object.keys(user).find(key => user[key] === '')
+    if (field) {
+      setMessage(field + ' is Required')
+      return
     }
-    let userData = { ...user, userId: user.id }
-    axios.post(`http://localhost:8222/users/${userId}/update`, userData, { headers: headers })
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        setMessage(err.response.data.err)
-      })
+
+    const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (!user.email.match(mailformat)) {
+      setMessage('Please enter a valid email')
+      return
+    }
+    const nickformat = /^[a-zA-Z0-9]+$/
+    if (!user.nick.match(nickformat) || user.nick.length < 6) {
+      setMessage('Nick must contain minimum 6 alpha-numeric characters')
+      return
+    }
+
+    if (user.dni.length !== 9) {
+      setMessage('DNI length must be 9 characters long')
+      return
+    }
+
+    if (
+      user.nombre !== '' &&
+      user.apellido1 !== '' &&
+      user.apellido2 !== '' &&
+      user.dni !== '' &&
+      user.nick !== '' &&
+      user.password !== '' &&
+      user.email !== ''
+    ) {
+      const headers = {
+        'Authorization': localStorage.HACKATHON_USER_TOKEN
+      }
+      let userData = { ...user, userId: user.id }
+      axios.post(process.env.REACT_APP_API_URL+`/users/${userId}/update`, userData, { headers: headers })
+        .then(() => {
+        })
+        .catch(err => {
+          setMessage(err.response.data.err)
+        })
+    }
   }
 
   const updateImage = (avatar) => {
     let formData = new FormData()
     formData.append('avatar', avatar)
-    axios.put(`http://localhost:8222/users/${userId}/avatar/update`, formData)
+    axios.put(process.env.REACT_APP_API_URL+`/users/${userId}/avatar/update`, formData)
       .then(res => {
-        // setUser({...user,avatar:'http://localhost:8222/'+res.data.file})
-        console.log({avatar:res.data.file});
+        // setUser({...user,avatar:process.env.REACT_APP_API_URL+'/'+res.data.file})
+        console.log({ avatar: res.data.file });
       })
       .catch(err => {
         console.log(err)
@@ -115,7 +148,7 @@ export default function ProfilePage(props) {
   }
 
   // const getUserAvatar = () => {
-  //   axios.post('http://localhost:8222/users/23/avatar')
+  //   axios.post(process.env.REACT_APP_API_URL+'/users/23/avatar')
   //     .then(res => {
   //       console.log(res);
   //     })

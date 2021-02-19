@@ -30,7 +30,7 @@ export default function HackathonSeaction(props) {
   }, [props]);
 
   const getHackathons = () => {
-    axios.get('http://localhost:8222/hackatones').then(async res => {
+    axios.get(process.env.REACT_APP_API_URL+'/hackatones').then(async res => {
       let data = res.data
       if (props.filter) {
         const nombre = query.get("nombre").toString().toLowerCase()

@@ -20,14 +20,17 @@ import loginPageStyle from "assets/jss/material-kit-pro-react/views/loginPageSty
 
 import image from "assets/img/bg7.jpg";
 import Card from "components/Card/Card";
-import { TextField } from "@material-ui/core";
+import { SnackbarContent, TextField } from "@material-ui/core";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(loginPageStyle);
 
 export default function LoginPage() {
 
+  const history = useHistory()
   const classes = useStyles();
+  const [errorMessage, setErrorMessage] = useState('')
   const [user, setUser] = useState({
     email: '',
     password: '',
@@ -44,15 +47,24 @@ export default function LoginPage() {
   });
 
   const signinHandler = () => {
-    console.log(user)
-    axios.post('http://localhost:8222/users/login', user)
-      .then(res => {
-        console.log(res);
-        localStorage.setItem('HACKATHON_USER_TOKEN',res.data.token)
-      })
-      .catch(err=>{
-        console.log(err)
-      })
+    const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (!user.email.match(mailformat)) {
+      setErrorMessage('Please enter a valid email')
+      return
+    }
+
+    if(user.email!=='' && user.password!==''){
+      axios.post(process.env.REACT_APP_API_URL+'/users/login', user)
+        .then(res => {
+          localStorage.setItem('HACKATHON_USER_TOKEN', res.data.token)
+          localStorage.setItem('HACKATHON_USER', JSON.stringify(res.data.user))
+          history.push('/')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
   }
 
   return (
@@ -110,6 +122,17 @@ export default function LoginPage() {
                           variant="outlined"
                         />
                       </GridItem>
+                      {
+                        errorMessage &&
+                        <SnackbarContent
+                          message={
+                            <span>{errorMessage}</span>
+                          }
+                          close='true'
+                          color="danger"
+                          icon="info_outline"
+                        />
+                      }
                     </GridContainer>
                   </CardBody>
                   <div className={classes.textCenter}>

@@ -20,24 +20,31 @@ const useStyles = makeStyles(workStyle);
 export default function SectionWork() {
   const classes = useStyles();
 
-  const [messageType, setMessageType] = useState('success')
   const [responseMessage, setResponseMessage] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
 
   const sendMessage = () => {
-    let payload = {
-      name,
-      email,
-      message
+    if (name !== '' && email !== '') {
+      const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      if (!email.match(mailformat)) {
+        setResponseMessage('Please enter a valid email')
+        return
+      }
+      let payload = {
+        name,
+        email,
+        message
+      }
+      axios.post(process.env.REACT_APP_API_URL+'/email', payload)
+        .then(res => {
+          setResponseMessage(res.data.message)
+        })
+        .catch(err => {
+          setResponseMessage('Something went wrong! Please try later.')
+        })
     }
-    axios.post('http://localhost:8222/email', payload).then(res => {
-      setResponseMessage(res.data.message)
-    })
-      .catch(err => {
-        setResponseMessage('Something went wrong! Please try later.')
-      })
   }
 
   return (
@@ -99,7 +106,7 @@ export default function SectionWork() {
                 md={4}
                 className={classes.mrAuto + " " + classes.mlAuto}
               >
-                <Button style={{marginTop:20}} onClick={() => sendMessage()} color="primary">Send Message</Button>
+                <Button style={{ marginTop: 20 }} onClick={() => sendMessage()} color="primary">Send Message</Button>
               </GridItem>
               <GridItem xs={12} sm={12} md={12}>
                 {

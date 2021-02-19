@@ -37,7 +37,7 @@ export default function SearchEngion(props) {
 	const history = useHistory();
 
 	useEffect(() => {
-		axios.get('http://localhost:8222/tecnologias')
+		axios.get(process.env.REACT_APP_API_URL+'/tecnologias')
 			.then(data => {
 				setTecnologias(data.data)
 			})

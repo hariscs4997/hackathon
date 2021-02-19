@@ -20,7 +20,7 @@ export default function NewsSeaction(props) {
     const [newsList, setNewsList] = useState([])
 
     useEffect(() => {
-        axios.get('http://localhost:8222/noticias').then(res => {
+        axios.get(process.env.REACT_APP_API_URL+'/noticias').then(res => {
             setNewsList(res.data.slice(0, 6))
         })
     }, [props])

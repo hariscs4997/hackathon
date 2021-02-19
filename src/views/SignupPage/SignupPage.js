@@ -20,14 +20,17 @@ import loginPageStyle from "assets/jss/material-kit-pro-react/views/loginPageSty
 
 import image from "assets/img/bg7.jpg";
 import Card from "components/Card/Card";
-import { TextField } from "@material-ui/core";
+import { SnackbarContent, TextField } from "@material-ui/core";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(loginPageStyle);
 
 export default function SignUpPage() {
 
   const classes = useStyles();
+  const history = useHistory()
+  const [errorMessage, setErrorMessage] = useState('')
   const [user, setUser] = useState({
     nombre: "",
     apellido1: "",
@@ -48,14 +51,47 @@ export default function SignUpPage() {
     document.body.scrollTop = 0;
   });
 
-  const registerHandler = () => {
-    axios.post('http://localhost:8222/users/register', user)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err=>{
-        console.log(err)
-      })
+  const registerHandler = async () => {
+    setErrorMessage('')
+    let field = Object.keys(user).find(key => user[key] === '')
+    if (field) {
+      setErrorMessage(field + ' is Required')
+      return
+    }
+
+    const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (!user.email.match(mailformat)) {
+      setErrorMessage('Please enter a valid email')
+      return
+    }
+    const nickformat = /^[a-zA-Z0-9]+$/
+    if (!user.nick.match(nickformat) || user.nick.length < 6) {
+      setErrorMessage('Nick must contain minimum 6 alpha-numeric characters')
+      return
+    }
+
+    if (user.dni.length !== 9) {
+      setErrorMessage('DNI length must be 9 characters long')
+      return
+    }
+
+    if (
+      user.nombre !== '' &&
+      user.apellido1 !== '' &&
+      user.apellido2 !== '' &&
+      user.dni !== '' &&
+      user.nick !== '' &&
+      user.password !== '' &&
+      user.email !== ''
+    ) {
+      axios.post(process.env.REACT_APP_API_URL+'/users/register', user)
+        .then(() => {
+          history.push('/login-page')
+        })
+        .catch(err => {
+          setErrorMessage(err.response.data.error)
+        })
+    }
   }
 
   return (
@@ -167,6 +203,19 @@ export default function SignUpPage() {
                           id="outlined-secondary"
                           variant="outlined"
                         />
+                      </GridItem>
+                      <GridItem style={{ marginBottom: 20 }} xs={12} sm={12} md={12}>
+                        {
+                          errorMessage &&
+                          <SnackbarContent
+                            message={
+                              <span>{errorMessage}</span>
+                            }
+                            close='true'
+                            color="danger"
+                            icon="info_outline"
+                          />
+                        }
                       </GridItem>
                     </GridContainer>
                   </CardBody>
