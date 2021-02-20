@@ -17,7 +17,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
-import { Router, Route, Switch } from "react-router";
+import { Router, Route, Switch, useHistory } from "react-router";
 
 import "assets/scss/material-kit-pro-react.scss?v=1.9.0";
 
@@ -44,13 +44,17 @@ import NewsDetail from "views/newsDetail/newsDetail";
 
 var hist = createBrowserHistory();
 
+const Authorized =()=>{
+  return localStorage.HACKATHON_USER_TOKEN
+}
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
-      <Route exact path="/" component={LandingPage} />
-      <Route exact path="/hackathon/search" component={HackathonSearchPage} />
-      <Route path="/hackathon/:id" component={HackathonDetail} />
-      <Route path="/news/:id" component={NewsDetail} />
+      <Route exact path="/" render={(props) => Authorized()?<LandingPage {...props} />: <LoginPage {...props} />} />
+      {/* <Route exact path="/" component={LandingPage} /> */}
+      <Route exact path="/hackathon/search" render={(props) => Authorized()?<HackathonSearchPage {...props} />: <LoginPage {...props} />} />
+      <Route path="/hackathon/:id" render={(props) => Authorized()?<HackathonDetail {...props} />: <LoginPage {...props} />} />
+      <Route path="/news/:id" render={(props) => Authorized()?<NewsDetail {...props} />: <LoginPage {...props} />} />
       {/* <Route path="/about-us" component={AboutUsPage} /> */}
       {/* <Route path="/blog-post" component={BlogPostPage} /> */}
       {/* <Route path="/blog-posts" component={BlogPostsPage} /> */}
@@ -59,7 +63,7 @@ ReactDOM.render(
       {/* <Route path="/ecommerce-page" component={EcommercePage} /> */}
       <Route exact path="/login-page" component={LoginPage} />
       {/* <Route path="/pricing" component={PricingPage} /> */}
-      <Route exact path="/profile-page" component={ProfilePage} />
+      <Route exact path="/profile-page" render={(props) => Authorized()?<ProfilePage {...props} />: <LoginPage {...props} />} />
       {/* <Route path="/product-page" component={ProductPage} /> */}
       {/* <Route path="/sections" component={SectionsPage} /> */}
       {/* <Route path="/shopping-cart-page" component={ShoppingCartPage} /> */}
