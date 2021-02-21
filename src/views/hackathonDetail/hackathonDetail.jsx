@@ -15,7 +15,7 @@ import HeaderLinks from "components/Header/HeaderLinks.js";
 import Parallax from "components/Parallax/Parallax.js";
 import hackathonImage from 'assets/img/hackathon/hackathon.jpg';
 import landingPageStyle from "assets/jss/material-kit-pro-react/views/landingPageStyle.js";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
@@ -28,6 +28,7 @@ import { Button, Icon } from "@material-ui/core";
 const useStyles = makeStyles(landingPageStyle);
 
 export default function HackathonDetail({ ...rest }) {
+	const history=useHistory()
 	const { id } = useParams()
 	const [responseMessage, setResponseMessage] = useState()
 	const [userId, setUserId] = useState()
@@ -62,14 +63,18 @@ export default function HackathonDetail({ ...rest }) {
 			})
 	}
 	const joinHackathon = () => {
-		const headers = {
-			'Authorization': localStorage.HACKATHON_USER_TOKEN
-		  }
-		axios.post(`${process.env.REACT_APP_API_URL}/hackatones/${hackathon.id}/${userId}/register`,{},{headers:headers})
-			.then(res => {
-				setResponseMessage(`codigo Reserva ${res.data.codigoReserva}`)
-			})
-			.catch(error=>setResponseMessage(error.response.data.err))
+		if(localStorage.HACKATHON_USER_TOKEN){
+			const headers = {
+				'Authorization': localStorage.HACKATHON_USER_TOKEN
+			  }
+			axios.post(`${process.env.REACT_APP_API_URL}/hackatones/${hackathon.id}/${userId}/register`,{},{headers:headers})
+				.then(res => {
+					setResponseMessage(`codigo Reserva ${res.data.codigoReserva}`)
+				})
+				.catch(error=>setResponseMessage(error.response.data.err))
+		}else{
+			history.push('/login-page')
+		}
 	}
 
 

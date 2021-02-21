@@ -50,11 +50,11 @@ const Authorized =()=>{
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
-      <Route exact path="/" render={(props) => Authorized()?<LandingPage {...props} />: <LoginPage {...props} />} />
+      <Route exact path="/" render={(props) => <LandingPage {...props} />} />
       {/* <Route exact path="/" component={LandingPage} /> */}
-      <Route exact path="/hackathon/search" render={(props) => Authorized()?<HackathonSearchPage {...props} />: <LoginPage {...props} />} />
-      <Route path="/hackathon/:id" render={(props) => Authorized()?<HackathonDetail {...props} />: <LoginPage {...props} />} />
-      <Route path="/news/:id" render={(props) => Authorized()?<NewsDetail {...props} />: <LoginPage {...props} />} />
+      <Route exact path="/hackathon/search" render={(props) => <HackathonSearchPage {...props} />} />
+      <Route path="/hackathon/:id" render={(props) => <HackathonDetail {...props} />} />
+      <Route path="/news/:id" render={(props) => <NewsDetail {...props} />} />
       {/* <Route path="/about-us" component={AboutUsPage} /> */}
       {/* <Route path="/blog-post" component={BlogPostPage} /> */}
       {/* <Route path="/blog-posts" component={BlogPostsPage} /> */}
@@ -63,7 +63,7 @@ ReactDOM.render(
       {/* <Route path="/ecommerce-page" component={EcommercePage} /> */}
       <Route exact path="/login-page" component={LoginPage} />
       {/* <Route path="/pricing" component={PricingPage} /> */}
-      <Route exact path="/profile-page" render={(props) => Authorized()?<ProfilePage {...props} />: <LoginPage {...props} />} />
+      <Route exact path="/profile-page" render={(props) => <ProfilePage {...props} />} />
       {/* <Route path="/product-page" component={ProductPage} /> */}
       {/* <Route path="/sections" component={SectionsPage} /> */}
       {/* <Route path="/shopping-cart-page" component={ShoppingCartPage} /> */}
